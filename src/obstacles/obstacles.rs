@@ -48,8 +48,9 @@ pub fn spawn_obstacles(
 pub fn move_obstacles(
     mut commands : Commands,
     mut obstacles: Query<(Entity, &mut Transform), With<Obstacle>>,
-    score: Res<Score>,
+    mut score: ResMut<Score>,
 ) {
+    //check to see if obstacle exists, if it does, we check if it went out of bound, despawn if yes
     if !obstacles.is_empty() {
         for (obstacle, mut pos) in obstacles.iter_mut() {
             pos.translation.x -= 5.;
@@ -57,12 +58,14 @@ pub fn move_obstacles(
                 commands.entity(obstacle).despawn();
             }
         }
+    // if its empty, we spawn new obstacles, add 1 to score
     } else {
+        score.value += 1;
         let mut rng = rand::rng();
     
         let x = GAME_WIDTH / 2.; //spawn obstacles at the right edge of the screen
         let gap_y = rng.random_range(-240.0..240.0); //randomly generate the gap's y position
-        let size = (250.0 - score.value as f32).max(2.0);//ensure the gap size doesnt shrink below 2.0
+        let size = (250.0 - (score.value as f32) * 10.).max(2.0);//ensure the gap size doesnt shrink below 2.0
 
         //boundaries of the gap
         let gap_top = gap_y + size / 2.;

@@ -1,5 +1,4 @@
 use crate::prelude::*;
-
 #[derive(States, PartialEq, Eq, Debug, Clone, Hash, Default)]
 pub enum GameState {
     #[default]
@@ -162,7 +161,7 @@ pub fn game_over(
         for (position, obstacle) in obstacles.iter() {
             let gap_top = obstacle.gap_y + obstacle.size / 2.;
             let gap_bot = obstacle.gap_y - obstacle.size / 2.;
-            if (bird.translation.x == (position.translation.x - 12.)) && (bird.translation.y > gap_top || bird.translation.y < gap_bot) {
+            if (bird.translation.x >= (position.translation.x - 12.)) && (bird.translation.x <= (position.translation.x + 12.)) && (bird.translation.y > gap_top || bird.translation.y < gap_bot) {
                 println!("Hit obstacle!");
                 next_state.set(GameState::GameOver);
             }
