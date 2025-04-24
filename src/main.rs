@@ -3,6 +3,7 @@ mod settings;
 mod player;
 mod controls;
 mod gamestate;
+mod obstacles;
 
 pub mod prelude {
     pub use bevy::{
@@ -17,12 +18,18 @@ pub mod prelude {
         player::player::*, 
         controls::inputs::*,
         gamestate::game_state::*,
+        obstacles::obstacles::*,
     };
     pub const GAME_WIDTH: f32 = 800.;
     pub const GAME_HEIGHT: f32 = 500.;
 }
 
 use prelude::*;
+
+#[derive(Resource, Default)]
+pub struct Score {
+    pub value: i32,
+}
 
 fn main() {
     App::new()
@@ -36,7 +43,7 @@ fn main() {
            }),
            ..Default::default()
         }))
-        //.init_resource::<State<GameState>>()
+        .init_resource::<Score>()
         .init_state::<GameState>()
         .add_systems(Startup, (spawn_camera, enter_main_menu))
         //main menu state
@@ -44,9 +51,9 @@ fn main() {
         .add_systems(Update, menu_options.run_if(in_state(GameState::MainMenu)))
         .add_systems(OnExit(GameState::MainMenu), exit_main_menu)
         //playing state
-        .add_systems(OnEnter(GameState::Playing), player_init)
+        .add_systems(OnEnter(GameState::Playing), (player_init, spawn_obstacles))
         .add_systems(Update, (apply_gravity, transition_to_gameover,).run_if(in_state(GameState::Playing)))
-        .add_systems(OnExit(GameState::Playing), exit_playing)
+        .add_systems(OnExit(GameState::Playing), (exit_playing, despawn_obstacles))
         //main game over
         .add_systems(OnEnter(GameState::GameOver), enter_gameover_menu)
         .add_systems(Update, menu_options.run_if(in_state(GameState::GameOver)))
@@ -56,7 +63,7 @@ fn main() {
             handle_resize, 
             keyboard_input_system,
             time_system,
-            check_state
+            check_state,
         ))
         .run();
 }
