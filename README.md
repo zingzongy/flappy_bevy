@@ -41,10 +41,9 @@ This is a work in progress, and I'll be continuously adding new features, polish
 
 1.  **Clone the repository:**
     ```bash
-    git clone <YOUR_REPOSITORY_URL>
+    git clone https://github.com/zingzongy/flappy_bevy.git 
     cd flappy_bevy
     ```
-    *(Replace `<YOUR_REPOSITORY_URL>` with the actual URL of your repository)*
 
 2.  **Run the game using Cargo:**
     ```bash
