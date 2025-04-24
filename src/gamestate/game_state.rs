@@ -147,14 +147,25 @@ pub fn exit_playing(
     }
 }
 
-pub fn transition_to_gameover(
+pub fn game_over(
     player: Query<&Transform, With<Bird>>,
-    mut next_state: ResMut<NextState<GameState>>
+    mut next_state: ResMut<NextState<GameState>>,
+    obstacles: Query<(&Transform, &Obstacle)>
 ) {
     for bird in player.iter() {
+        //falling to the ground
         if (bird.translation.y - ( - (GAME_HEIGHT / 2.))).abs() < 0.1 {
             println!("bird died");
             next_state.set(GameState::GameOver);
+        }
+        //collision detection with obstacles
+        for (position, obstacle) in obstacles.iter() {
+            let gap_top = obstacle.gap_y + obstacle.size / 2.;
+            let gap_bot = obstacle.gap_y - obstacle.size / 2.;
+            if (bird.translation.x == (position.translation.x - 12.)) && (bird.translation.y > gap_top || bird.translation.y < gap_bot) {
+                println!("Hit obstacle!");
+                next_state.set(GameState::GameOver);
+            }
         }
     }
 }

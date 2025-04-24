@@ -52,7 +52,7 @@ fn main() {
         .add_systems(OnExit(GameState::MainMenu), exit_main_menu)
         //playing state
         .add_systems(OnEnter(GameState::Playing), (player_init, spawn_obstacles))
-        .add_systems(Update, (apply_gravity, transition_to_gameover,).run_if(in_state(GameState::Playing)))
+        .add_systems(Update, (apply_gravity, move_obstacles, game_over,).run_if(in_state(GameState::Playing)))
         .add_systems(OnExit(GameState::Playing), (exit_playing, despawn_obstacles))
         //main game over
         .add_systems(OnEnter(GameState::GameOver), enter_gameover_menu)
