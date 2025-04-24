@@ -61,6 +61,7 @@ pub fn move_obstacles(
     // if its empty, we spawn new obstacles, add 1 to score
     } else {
         score.value += 1;
+        println!("score is: {}", score.value);
         let mut rng = rand::rng();
     
         let x = GAME_WIDTH / 2.; //spawn obstacles at the right edge of the screen
@@ -102,4 +103,8 @@ pub fn despawn_obstacles(
     for obstacle in obstacles.iter() {
         commands.entity(obstacle).despawn();
     }
+}
+
+pub fn reset_score(mut score: ResMut<Score>) {
+    score.value = 0;
 }

@@ -22,14 +22,13 @@ pub mod prelude {
     };
     pub const GAME_WIDTH: f32 = 800.;
     pub const GAME_HEIGHT: f32 = 500.;
+    #[derive(Resource, Default)]
+    pub struct Score {
+        pub value: i32,
+    }
 }
 
 use prelude::*;
-
-#[derive(Resource, Default)]
-pub struct Score {
-    pub value: i32,
-}
 
 fn main() {
     App::new()
@@ -51,9 +50,9 @@ fn main() {
         .add_systems(Update, menu_options.run_if(in_state(GameState::MainMenu)))
         .add_systems(OnExit(GameState::MainMenu), exit_main_menu)
         //playing state
-        .add_systems(OnEnter(GameState::Playing), (player_init, spawn_obstacles))
-        .add_systems(Update, (apply_gravity, move_obstacles, game_over,).run_if(in_state(GameState::Playing)))
-        .add_systems(OnExit(GameState::Playing), (exit_playing, despawn_obstacles))
+        .add_systems(OnEnter(GameState::Playing), (player_init, spawn_obstacles, spawn_score_text, spawn_instruction_text, reset_score))
+        .add_systems(Update, (apply_gravity, move_obstacles, update_score_text, game_over,).run_if(in_state(GameState::Playing)))
+        .add_systems(OnExit(GameState::Playing), (exit_playing, despawn_obstacles, despawn_instruction))
         //main game over
         .add_systems(OnEnter(GameState::GameOver), enter_gameover_menu)
         .add_systems(Update, menu_options.run_if(in_state(GameState::GameOver)))
