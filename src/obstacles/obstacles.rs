@@ -17,7 +17,7 @@ pub fn spawn_obstacles(
     let x = GAME_WIDTH / 2.; //spawn obstacles at the right edge of the screen
     let gap_y = rng.random_range(-240.0..240.0); //randomly generate the gap's y position
     let size = (250.0 - score.value as f32).max(2.0);//ensure the gap size doesnt shrink below 2.0
-
+    let obstacle_color = Color::srgb(0.54, 0.05, 0.05);
     //boundaries of the gap
     let gap_top = gap_y + size / 2.;
     let gap_bot = gap_y - size / 2.;
@@ -27,7 +27,7 @@ pub fn spawn_obstacles(
     commands.spawn((
         Obstacle {gap_y, size},
         Sprite {
-            color: Color::Srgba(WHITE),
+            color: obstacle_color,
             custom_size: Some(Vec2::new(10.0, top_obs_size)), //width and height of the obstacle
             ..Default::default()
         },
@@ -37,7 +37,7 @@ pub fn spawn_obstacles(
     commands.spawn((
         Obstacle {gap_y, size},
         Sprite {
-            color: Color::Srgba(WHITE),
+            color: obstacle_color,
             custom_size: Some(Vec2::new(10.0, bot_obs_size)), //width and height of the obstacle
             ..Default::default()
         },
@@ -45,11 +45,12 @@ pub fn spawn_obstacles(
     ));
 }
 
-pub fn move_obstacles(
+pub fn spawn_move_obstacles(
     mut commands : Commands,
     mut obstacles: Query<(Entity, &mut Transform), With<Obstacle>>,
     mut score: ResMut<Score>,
 ) {
+    let obstacle_color = Color::srgb(0.54, 0.05, 0.05);
     //check to see if obstacle exists, if it does, we check if it went out of bound, despawn if yes
     if !obstacles.is_empty() {
         for (obstacle, mut pos) in obstacles.iter_mut() {
@@ -77,7 +78,7 @@ pub fn move_obstacles(
         commands.spawn((
             Obstacle {gap_y, size},
             Sprite {
-                color: Color::Srgba(WHITE),
+                color: obstacle_color,
                 custom_size: Some(Vec2::new(10.0, top_obs_size)), //width and height of the obstacle
                 ..Default::default()
             },
@@ -87,7 +88,7 @@ pub fn move_obstacles(
         commands.spawn((
             Obstacle {gap_y, size},
             Sprite {
-                color: Color::Srgba(WHITE),
+                color: obstacle_color,
                 custom_size: Some(Vec2::new(10.0, bot_obs_size)), //width and height of the obstacle
                 ..Default::default()
             },

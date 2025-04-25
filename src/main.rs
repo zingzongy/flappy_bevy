@@ -4,6 +4,7 @@ mod player;
 mod controls;
 mod gamestate;
 mod obstacles;
+mod background;
 
 pub mod prelude {
     pub use bevy::{
@@ -19,6 +20,7 @@ pub mod prelude {
         controls::inputs::*,
         gamestate::game_state::*,
         obstacles::obstacles::*,
+        background::background::*,
     };
     pub const GAME_WIDTH: f32 = 800.;
     pub const GAME_HEIGHT: f32 = 500.;
@@ -36,7 +38,7 @@ fn main() {
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 resolution: WindowResolution::new(800., 500.).with_scale_factor_override(1.),
-                resizable: true,
+                resizable: false,
                 title: "Flappy Bevy".to_string(),
                 ..Default::default()
            }),
@@ -50,9 +52,33 @@ fn main() {
         .add_systems(Update, menu_options.run_if(in_state(GameState::MainMenu)))
         .add_systems(OnExit(GameState::MainMenu), exit_main_menu)
         //playing state
-        .add_systems(OnEnter(GameState::Playing), (player_init, spawn_obstacles, spawn_score_text, spawn_instruction_text, reset_score))
-        .add_systems(Update, (apply_gravity, move_obstacles, update_score_text, game_over,).run_if(in_state(GameState::Playing)))
-        .add_systems(OnExit(GameState::Playing), (exit_playing, despawn_obstacles, despawn_instruction))
+        .add_systems(OnEnter(GameState::Playing), 
+        (
+            player_init, 
+            setup_background,
+            //spawn_obstacles, 
+            spawn_score_text, 
+            spawn_instruction_text, 
+            reset_score,
+            init_clouds,
+        ))
+        .add_systems(Update, 
+            (
+            apply_gravity, 
+            spawn_move_obstacles, 
+            update_score_text, 
+            spawn_cloud,
+            move_clouds,
+            game_over,
+        ).run_if(in_state(GameState::Playing)))
+        .add_systems(OnExit(GameState::Playing), 
+        (
+            despawn_background,
+            exit_playing, 
+            despawn_obstacles, 
+            despawn_instruction,
+            despawn_clouds,
+        ))
         //main game over
         .add_systems(OnEnter(GameState::GameOver), enter_gameover_menu)
         .add_systems(Update, menu_options.run_if(in_state(GameState::GameOver)))

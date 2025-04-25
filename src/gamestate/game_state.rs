@@ -1,4 +1,5 @@
 use crate::prelude::*;
+
 #[derive(States, PartialEq, Eq, Debug, Clone, Hash, Default)]
 pub enum GameState {
     #[default]
@@ -139,7 +140,7 @@ pub fn exit_main_menu(mut commands: Commands, main_menu: Query<Entity, With<Main
 
 pub fn exit_playing(
     mut commands: Commands, 
-    playing_items: Query<Entity, With<ParentEntity>>,
+    playing_items: Query<Entity, With<Bird>>,
 ) {
     for parent in playing_items.iter() {
         commands.entity(parent).despawn_recursive();

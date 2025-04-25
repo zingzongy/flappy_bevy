@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-const PARENT_MARGIN: f32 = 0.1; //use val 0 - 1
+const PARENT_MARGIN: f32 = 0.05; //use val 0 - 1
 
 #[derive(Component)]
 pub struct ParentEntity; 
@@ -22,6 +22,19 @@ pub fn player_init(
     let bird_y = (window.height() / 2.) - (window.height() * PARENT_MARGIN);
 
     commands.spawn((
+        Sprite {
+            image: bird_texture, 
+            anchor: Anchor::Center,
+            ..Default::default()
+        },
+        Transform::from_xyz(bird_x, bird_y, 1.),
+        Bird {
+            x: 0.,
+            velocity: 0.
+        }, 
+    ));
+
+    /*commands.spawn((
         Sprite {
             color: Color::srgb(0.3, 0.3, 0.5),
             custom_size: Some(Vec2::new(window.width(), window.height(),)),
@@ -46,6 +59,7 @@ pub fn player_init(
             },
         ));
     });
+    */
 }
 
 pub fn apply_gravity(mut player: Query<(&mut Transform, &mut Bird)>, time: Res<Time>) {
