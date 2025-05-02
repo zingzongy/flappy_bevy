@@ -7,6 +7,7 @@ mod obstacles;
 mod background;
 
 pub mod prelude {
+    pub use std::time::Duration;
     pub use bevy::{
         prelude::*, 
         window::{WindowResized, WindowResolution}, 
@@ -64,6 +65,7 @@ fn main() {
         ))
         .add_systems(Update, 
             (
+            execute_animations,
             apply_gravity, 
             spawn_move_obstacles, 
             update_score_text, 

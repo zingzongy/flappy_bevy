@@ -107,5 +107,5 @@ pub fn despawn_obstacles(
 }
 
 pub fn reset_score(mut score: ResMut<Score>) {
-    score.value = 0;
+    score.value = -1;
 }
